@@ -1,88 +1,45 @@
 import React, { Component } from 'react';
+import { Route, NavLink, Switch } from 'react-router-dom';
 // import axios from 'axios';
-import axios from '../../axios';
 
-import Post from '../../components/Post/Post';
-import FullPost from '../../components/FullPost/FullPost';
-import NewPost from '../../components/NewPost/NewPost';
-import './Blog.css';
+import Posts from './Posts/Posts';
+import NewPost from './NewPost/NewPost';
+// import FullPost from './FullPost/FullPost';
+
+import classes from './Blog.module.css';
+
 
 class Blog extends Component {
 
-    state = {
-        posts: [],
-        selectedPostId: null,
-        error: false
-    }
-
-    componentDidMount() {
-        axios
-            .get('/posts')
-            .then(res => {
-                const posts = res.data.slice(0, 4);
-                const updatedPosts = posts.map(post => {
-                    return {
-                        ...post,
-                        author: 'Satvik'
-                    }
-                })
-                this.setState({
-                    posts: updatedPosts
-                })
-            }
-            )
-            .catch(err => {
-                this.setState({
-                    error: true
-                })
-                console.log(err);
-                // if (err.response) {
-                //     // Status other than 200
-                //     console.log(err.response.status);
-                //     console.log(err.response.data);
-                //     console.log(err.response.headers);
-                // }
-                // else if (err.request) {
-                //     console.log(err.request);
-                // }
-                // else {
-                //     console.log(err.message);
-                // }
-            });
-    }
-
-    postSelectedHandler = (id) => {
-        console.log(`Article ${id} clicked`);
-        this.setState({
-            selectedPostId: id
-        });
-    }
-
     render() {
-        let posts = <p style={{ textAlign: 'center' }}>Something went wrong!</p>;
-        if (!this.state.error) {
-            posts = this.state.posts
-                .map((post) => (<Post
-                    key={post.id}
-                    title={post.title}
-                    author={post.author}
-                    clicked={() => this.postSelectedHandler(post.id)}
-                >${post}
-                </Post>));
-        }
-
-
         return (
-            <div>
-                <section className="Posts">
-                    {posts}
-                </section>
-                <section>
-                    <FullPost id={this.state.selectedPostId} />
-                </section>
-                <section>
-                    <NewPost />
-                </section>
+            <div className={classes.Blog}>
+                <header>
+                    <nav>
+                        <ul>
+                            <li><NavLink
+                                to="/posts/"
+                                exact
+                                activeClassName="my-active"
+                                activeStyle={{ textDecoration: 'underlne' }}
+                            >Posts</NavLink></li>
+                            <li><NavLink to={{
+                                pathname: '/new-post',
+                                hash: '#idName',
+                                search: '?quick-submit=true'
+                            }}>New Post</NavLink></li>
+                        </ul>
+                    </nav>
+                </header>
+
+                <Switch>
+                    <Route
+                        path="/new-post"
+                        component={NewPost} />
+                    <Route
+                        path="/posts"
+                        component={Posts} />
+                </Switch>
             </div>
         );
     }
