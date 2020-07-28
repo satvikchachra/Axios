@@ -14,6 +14,7 @@ class NewPost extends Component {
 
     componentDidMount() {
         console.log(this.props);
+        // if unauth: this.props.history.replace('/posts')
     }
 
     postDataHandler = () => {
@@ -27,9 +28,13 @@ class NewPost extends Component {
             .post('/posts', post)
             .then(res => {
                 console.log(res)
-                this.setState({
-                    submitted: true
-                });
+
+                // this.props.history.push('/posts');
+                this.props.history.replace('/posts');
+
+                // this.setState({
+                //     submitted: true
+                // });
             })
             .catch(err => console.log(err));
 
